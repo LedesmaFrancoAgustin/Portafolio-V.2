@@ -1,0 +1,77 @@
+import { useEffect, useState } from 'react'
+import skyDayBase from '../../assets/images/scene/sky/Fondo.webp'
+import { StarField } from './StarField'
+import cloud1 from '../../assets/images/scene/interactive-cloud/Cloud-1.webp'
+import cloud2 from '../../assets/images/scene/interactive-cloud/cloud-2.webp'
+import cloud3 from '../../assets/images/scene/interactive-cloud/Cloud-3.webp'
+import cloud4 from '../../assets/images/scene/interactive-cloud/Cloud-4.webp'
+import cloud5 from '../../assets/images/scene/interactive-cloud/Cloud-5.webp'
+import '../lib/interactive-cloud.js'
+import '../scene.css'
+
+const CLOUD_EFFECT = {
+  influence: 0.22,
+  strength: 0.28,
+  glow: 1,
+  erode: 1,
+  breathe: 3.5,
+}
+
+// nubes hero (frente, más grandes) mantienen más partículas; las de fondo/haze
+// se notan mucho menos en la dispersión y no justifican el mismo costo de simulación
+const DENSITY_HERO = 0.5
+const DENSITY_MID = 0.3
+const DENSITY_WISP = 0.25
+const DENSITY_HAZE = 0.18
+
+// mismo corte que scene.css (max-width: 640px): en mobile hay bastante menos
+// CPU disponible que en desktop, así que la simulación de partículas de cada
+// nube (que no escala con el tamaño en pantalla, ver interactive-cloud.js)
+// se reduce con un factor aparte
+const MOBILE_QUERY = '(max-width: 640px)'
+const MOBILE_DENSITY_FACTOR = 0.4
+
+function useIsMobileViewport() {
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches)
+
+  useEffect(() => {
+    const mql = window.matchMedia(MOBILE_QUERY)
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [])
+
+  return isMobile
+}
+
+interface SceneCanvasProps {
+  isNight: boolean
+}
+
+export function SceneCanvas({ isNight }: SceneCanvasProps) {
+  const isMobile = useIsMobileViewport()
+  const scale = isMobile ? MOBILE_DENSITY_FACTOR : 1
+  const cloudEffect = isNight ? { ...CLOUD_EFFECT, glow: 0.35 } : CLOUD_EFFECT
+
+  return (
+    <div className={`scene-canvas${isNight ? ' is-night' : ''}`} aria-hidden="true">
+      <img className="scene-sky" src={skyDayBase} alt="" />
+      <div className="scene-night-moon">
+        <svg viewBox="0 0 100 100">
+          <mask id="scene-moon-mask">
+            <rect width="100" height="100" fill="#fff" />
+            <circle cx="63" cy="36" r="34" fill="#000" />
+          </mask>
+          <circle cx="50" cy="50" r="34" fill="#f6f2e2" mask="url(#scene-moon-mask)" />
+        </svg>
+      </div>
+      <div className="scene-shooting-star" />
+      <StarField night={isNight} />
+      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--4" src={cloud4} {...cloudEffect} density={DENSITY_HAZE * scale} />
+      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--3" src={cloud3} {...cloudEffect} density={DENSITY_MID * scale} />
+      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--2" src={cloud2} {...cloudEffect} density={DENSITY_WISP * scale} />
+      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--1" src={cloud1} {...cloudEffect} density={DENSITY_HERO * scale} />
+      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--5" src={cloud5} {...cloudEffect} density={DENSITY_HERO * scale} />
+    </div>
+  )
+}

@@ -1,0 +1,910 @@
+.projects-section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  /* El padding de arriba solía ser igual al de abajo (clamp(5rem,12vh,8rem))
+     porque tenía que compensar él solo el overlap con el header fijo. Ahora
+     que scroll-margin-top (ver globals.css) resuelve eso de forma genérica
+     para todas las secciones, dejarlo tan grande sumaba un espacio doble al
+     saltar acá desde el nav. Se reduce solo el top, dejando el bottom como
+     estaba para no achicar la separación con Contacto. */
+  padding: clamp(1.25rem, 2.5vh, 2.25rem) clamp(1.5rem, 6vw, 5rem) clamp(5rem, 12vh, 8rem);
+}
+
+.projects-content {
+  position: relative;
+  z-index: 1;
+  max-width: 64rem;
+  width: 100%;
+  color: #fff;
+}
+
+.projects-eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c9b3ff;
+}
+
+.projects-heading {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.9rem, 4vw, 2.75rem);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.projects-paragraph {
+  margin: 0;
+  max-width: 34rem;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.projects-subheading {
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.projects-featured {
+  margin-top: 2.5rem;
+}
+
+.projects-others {
+  margin-top: 3rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.25rem;
+}
+
+.projects-featured-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  gap: 1.75rem;
+  align-items: stretch;
+}
+
+.project-card.project-card--featured {
+  height: 100%;
+  overflow: visible;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.project-card.project-card--featured:hover {
+  transform: none;
+  border-color: transparent;
+}
+
+.project-card--featured .project-card__media {
+  display: none;
+}
+
+.project-card--featured .project-card__body {
+  height: 100%;
+
+  padding: 10px 2px;
+}
+
+/* La card destacada no tiene fondo propio (queda transparente sobre la
+   escena), así que la descripción entera (título, summary, tags y links)
+   necesita el mismo difumado oscuro que usamos en Home/Contact para no
+   perder legibilidad. Un solo ::before para todo el bloque, no uno por
+   parte, para que se vea como un único halo detrás del texto.
+   z-index propio (no solo position:relative) para que el ::before quede
+   aislado en su propio stacking context: si no, el z-index:-1 se escapa
+   hacia arriba y termina pintado detrás de toda la card, invisible. */
+.project-card--featured .project-card__description.section-text-scrim {
+  z-index: 1;
+}
+
+.project-card--featured .project-card__description.section-text-scrim::before {
+  inset: -0.6rem -0.7rem;
+  border-radius: 1rem;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(18, 10, 38, 0.6) 0%,
+    rgba(18, 10, 38, 0.32) 55%,
+    rgba(18, 10, 38, 0) 82%
+  );
+  filter: blur(3px);
+}
+
+.project-card--featured .project-card__title {
+  font-size: 1.5rem;
+}
+
+/* El isotipo tiene colores claros que se pierden sobre la escena; una
+   chapita clara detrás le da el contraste que le falta. */
+.project-card--featured .project-card__title-icon {
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0.35rem;
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+}
+
+.project-card--featured .project-card__summary {
+  font-size: 1rem;
+}
+
+/* Sobre la escena clara (nubes), el tinte celeste casi transparente de los
+   tags se pierde: se le suma una base oscura propia, igual a la del scrim,
+   en vez de depender solo del halo difuminado detrás del bloque. */
+.project-card--featured .project-card__tech-tag {
+  background: linear-gradient(rgba(137, 221, 255, 0.12), rgba(137, 221, 255, 0.12)),
+    rgba(10, 8, 26, 0.72);
+  border-color: rgba(137, 221, 255, 0.35);
+}
+
+.project-showcase {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.project-showcase:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.26);
+}
+
+.project-showcase__chrome {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 0.4rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.project-showcase__chrome span:not(.project-showcase__url) {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.project-showcase__chrome span:nth-child(1) {
+  background: #ff5f57;
+}
+
+.project-showcase__chrome span:nth-child(2) {
+  background: #febc2e;
+}
+
+.project-showcase__chrome span:nth-child(3) {
+  background: #28c840;
+}
+
+.project-showcase__url {
+  margin-left: 0.5rem;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.project-showcase__frame {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+  background: #0c0916;
+}
+
+.project-showcase__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+  pointer-events: none;
+}
+
+.project-showcase__badge {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: rgba(9, 12, 30, 0.8);
+  border: 1px solid rgba(125, 140, 255, 0.28);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 30px 80px rgba(6, 6, 32, 0.55);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(125, 140, 255, 0.45);
+}
+
+/* ---------- Carcasa de "editor" (igual espíritu que el formulario de
+   contacto: ventana con semáforos arriba y barra de estado abajo). La
+   card destacada no la usa: queda transparente sobre la escena. ---------- */
+
+.project-card__titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+.project-card__lights {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.project-card__lights span {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.project-card__lights span:nth-child(2) {
+  background: #febc2e;
+}
+
+.project-card__lights span:nth-child(3) {
+  background: #28c840;
+}
+
+.project-card__tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.project-card__tab svg {
+  flex-shrink: 0;
+  color: #7dd3fc;
+}
+
+.project-card__tab span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-card__statusbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.45rem 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.15);
+  font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.project-card__branch {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.project-card__filetype {
+  margin-left: auto;
+}
+
+.project-card__media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(
+    150deg,
+    rgba(183, 155, 255, 0.28) 0%,
+    rgba(109, 93, 159, 0.32) 55%,
+    rgba(18, 10, 38, 0.4) 100%
+  );
+}
+
+.project-card:not(.project-card--featured) .project-card__media[role='button'] {
+  cursor: zoom-in;
+}
+
+.project-card:not(.project-card--featured) .project-card__media[role='button']:hover .project-card__image {
+  transform: scale(1.03);
+}
+
+.project-card:not(.project-card--featured) .project-card__media[role='button']:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: -2px;
+}
+
+.project-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+.project-card__media .project-card__image {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 600ms ease, transform 300ms ease;
+}
+
+.project-card__media .project-card__image--active {
+  opacity: 1;
+}
+
+.project-card__dots {
+  position: absolute;
+  bottom: 0.7rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.project-card__dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.project-card__dot--active {
+  background: #fff;
+  transform: scale(1.3);
+}
+
+.project-card__placeholder {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.project-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: 1.25rem 1.4rem 1.5rem;
+}
+
+.project-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.project-card__title-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.project-card__summary {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.project-card__problem {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.project-card__tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card__tech-tag {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #89ddff;
+  background: rgba(137, 221, 255, 0.08);
+  border: 1px solid rgba(137, 221, 255, 0.25);
+}
+
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+}
+
+/* Solo en las tarjetas no destacadas los links quedan siempre pegados al pie
+   del card (el destacado ocupa el alto real de su contenido, sin estirarse). */
+.project-card:not(.project-card--featured) .project-card__links {
+  margin-top: auto;
+  padding-top: 1.1rem;
+}
+
+/* Los links son botones estilo "git" en todas las cards (incluida la
+   destacada), igual que el CTA del formulario de contacto (borde + fondo
+   tenue con acento). */
+.project-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.project-card__link:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* En la card destacada "Ver detalle" y "Ver sitio" quedan directamente sobre
+   la escena (sin fondo de card propio), así que necesitan un fondo más
+   oscuro que el resto para no perder contraste. "Código" queda afuera
+   porque ya tiene su propio acento de color. */
+.project-card--featured .project-card__link:not(.project-card__link--primary) {
+  background: rgba(10, 6, 22, 0.65);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.project-card--featured .project-card__link:not(.project-card__link--primary):hover {
+  background: rgba(10, 6, 22, 0.8);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.project-card__link--primary {
+  border-color: rgba(74, 222, 128, 0.55);
+  background: rgba(74, 222, 128, 0.08);
+  color: #4ade80;
+}
+
+.project-card__link--primary:hover {
+  border-color: rgba(74, 222, 128, 0.8);
+  background: rgba(74, 222, 128, 0.16);
+  color: #86efac;
+}
+
+/* Ocupa toda la fila (fuerza el wrap dentro del flex de .project-card__links)
+   y centra su contenido, para que quede como CTA propio debajo de los demás
+   links en vez de otra pastilla más alineada a la izquierda. */
+.project-card__link--play {
+  flex: 1 0 100%;
+  justify-content: center;
+  cursor: pointer;
+  border-color: rgba(201, 179, 255, 0.5);
+  background: rgba(201, 179, 255, 0.1);
+  color: #c9b3ff;
+}
+
+.project-card__link--play:hover {
+  border-color: rgba(201, 179, 255, 0.85);
+  background: rgba(201, 179, 255, 0.18);
+  color: #ddccff;
+}
+
+.project-card__link-arrow {
+  transition: transform 0.2s ease;
+}
+
+.project-card__link--primary:hover .project-card__link-arrow {
+  transform: translateX(3px);
+}
+
+.featured-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 640px;
+  margin-top: 1.75rem;
+}
+
+.featured-gallery__item {
+  position: relative;
+  flex: 1;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  filter: brightness(0.92);
+  transition: flex 700ms cubic-bezier(0.25, 1, 0.5, 1), filter 700ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.featured-gallery__item:hover {
+  filter: brightness(1);
+}
+
+.featured-gallery__item--active,
+.featured-gallery__item--active:hover {
+  flex: 4;
+  filter: brightness(1);
+  cursor: zoom-in;
+}
+
+.featured-gallery__item:focus-visible {
+  outline: 2px solid rgba(183, 155, 255, 0.9);
+  outline-offset: 3px;
+}
+
+.featured-gallery__media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 42%;
+  object-fit: cover;
+  object-position: center top;
+  background-size: cover;
+  background-position: center;
+  transition: height 700ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.featured-gallery__item--active .featured-gallery__media {
+  height: 100%;
+}
+
+.featured-gallery__video {
+  object-fit: cover;
+  background: #120a26;
+}
+
+.featured-gallery__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2) 60%, transparent);
+  transition: opacity 500ms ease;
+}
+
+.featured-gallery__item--active .featured-gallery__overlay {
+  opacity: 1;
+}
+
+.featured-gallery__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
+}
+
+.featured-gallery__active-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+  opacity: 0;
+  transform: translateY(2rem);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+
+.featured-gallery__item--active .featured-gallery__active-content {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 200ms;
+}
+
+.featured-gallery__tag {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.featured-gallery__title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1;
+  color: #fff;
+}
+
+.featured-gallery__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.featured-gallery__inactive-label {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  transition: opacity 500ms ease, transform 500ms ease;
+  transition-delay: 500ms;
+  color: #fff;
+}
+
+.featured-gallery__item--active .featured-gallery__inactive-label {
+  opacity: 0;
+  transform: translateX(-50%) scale(0.5);
+  transition-delay: 0ms;
+}
+
+.featured-gallery__inactive-label-vertical {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.featured-gallery__inactive-label-id {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .featured-gallery {
+    flex-direction: row;
+    gap: 1rem;
+    height: 460px;
+  }
+
+  .featured-gallery__content {
+    padding: 2rem;
+  }
+
+  .featured-gallery__title {
+    font-size: 2.2rem;
+  }
+
+  .featured-gallery__inactive-label-vertical {
+    display: block;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .featured-gallery__inactive-label-id {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .projects-section {
+    text-align: center;
+  }
+
+  .projects-paragraph {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .projects-subheading {
+    text-align: left;
+  }
+
+  .project-card__tech,
+  .project-card__links {
+    justify-content: center;
+  }
+
+  .projects-featured-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.project-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(8, 4, 18, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: project-lightbox-fade-in 200ms ease;
+}
+
+@keyframes project-lightbox-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.project-lightbox__image {
+  display: block;
+  max-width: min(90vw, 1100px);
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  border-radius: 1rem;
+  object-fit: contain;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* El video no tiene tamaño intrínseco hasta cargar metadata — se fija el ancho
+   para que no arranque en los 300px por defecto y "salte" al cargar. */
+.project-lightbox__image--video {
+  width: min(90vw, 1100px);
+  background: #120a26;
+}
+
+.project-lightbox__close {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.project-lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.project-lightbox__nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.project-lightbox__nav:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.project-lightbox__nav--prev {
+  left: 1.5rem;
+}
+
+.project-lightbox__nav--next {
+  right: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .project-lightbox__nav {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.6rem;
+  }
+
+  .project-lightbox__nav--prev {
+    left: 0.5rem;
+  }
+
+  .project-lightbox__nav--next {
+    right: 0.5rem;
+  }
+
+  /* Más oscuro que en desktop: en mobile la card destacada se apila a lo
+     ancho de la pantalla, con menos margen a los costados para que se
+     escape la escena, así que necesita más contraste para seguir
+     leyéndose bien. */
+  .project-card--featured .project-card__description.section-text-scrim::before {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(18, 10, 38, 0.82) 0%,
+      rgba(18, 10, 38, 0.5) 55%,
+      rgba(18, 10, 38, 0) 82%
+    );
+  }
+}

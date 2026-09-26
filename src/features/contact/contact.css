@@ -1,0 +1,906 @@
+/* Sección Contacto — "editor + git push". El fondo lo pone la escena
+   persistente (cielo nocturno + StarField), por eso la sección es transparente. */
+
+.contact-section {
+  --c-font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --c-font-display: 'Outfit', system-ui, sans-serif;
+
+  --c-text: #c9d1f5;
+  --c-text-strong: #e6e9ff;
+  --c-text-soft: #aab3dd;
+  --c-muted: #8b95c9;
+  --c-dim: #6b76a8;
+  --c-faint: #56608c;
+  --c-gutter: #4a5380;
+  --c-icon-idle: #5b6690;
+
+  --c-green: #4ade80;
+  --c-green-hover: #86efac;
+  --c-teal: #2dd4bf;
+  --c-sky: #7dd3fc;
+  --c-cyan: #89ddff;
+  --c-purple: #c792ea;
+  --c-lavender: #c4bfff;
+  --c-amber: #fbbf24;
+  --c-red: #f87171;
+  --c-red-soft: #fca5a5;
+
+  --c-line: rgba(125, 140, 255, 0.16);
+  --c-line-strong: rgba(125, 140, 255, 0.28);
+
+  position: relative;
+  min-height: 100vh;
+  /* El top solía compensar él solo el overlap con el header fijo; ahora lo
+     resuelve scroll-margin-top (ver globals.css) para todas las secciones,
+     así que bajarlo evita el doble espacio al llegar acá desde el nav. */
+  padding: 32px 20px 120px;
+  font-family: var(--c-font-mono);
+  color: var(--c-text);
+}
+
+/* Móvil: intro → editor → terminal (la terminal se superpone al pie del
+   editor). Escritorio: la terminal baja por la columna izquierda, debajo de
+   la intro, para no estirar la sección con scroll extra. */
+.contact-layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'intro'
+    'editor'
+    'terminal';
+  gap: 56px clamp(40px, 6vw, 88px);
+  align-items: start;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.contact-intro {
+  grid-area: intro;
+}
+
+.contact-editor {
+  grid-area: editor;
+}
+
+.contact-terminal {
+  grid-area: terminal;
+}
+
+@media (min-width: 800px) {
+  .contact-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'intro editor'
+      'terminal editor';
+    row-gap: 40px;
+  }
+}
+
+/* ---------- Columna de introducción ---------- */
+
+.contact-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  max-width: 460px;
+  padding-top: 12px;
+}
+
+/* Difumado un poco más oscuro que el genérico de section-text-scrim, para
+   que el texto de contacto se lea mejor sobre la escena. */
+.contact-intro.section-text-scrim::before {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(18, 10, 38, 0.56) 0%,
+    rgba(18, 10, 38, 0.28) 50%,
+    rgba(18, 10, 38, 0) 78%
+  );
+}
+
+.contact-header {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.contact-eyebrow {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-lavender);
+}
+
+.contact-heading {
+  margin: 0;
+  font-family: var(--c-font-display);
+  font-size: clamp(38px, 6vw, 56px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.contact-paragraph {
+  max-width: 500px;
+  margin: 0;
+  font-family: var(--c-font-display);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #d8d6f5;
+  text-wrap: pretty;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-info__item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.contact-info__icon {
+  margin-top: 2px;
+  color: var(--c-teal);
+}
+
+.contact-info__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-info__label {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--c-teal);
+}
+
+.contact-info__value {
+  font-size: 14px;
+  color: var(--c-text);
+}
+
+.contact-info__value--link {
+  text-decoration: none;
+  word-break: break-all;
+  transition: color 0.2s;
+}
+
+.contact-info__value--link:hover {
+  color: #fff;
+}
+
+.contact-info__value--link:focus-visible {
+  outline: 2px solid var(--c-green);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.contact-info__value-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-info__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--c-dim);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.contact-info__copy:hover {
+  color: var(--c-teal);
+  background: rgba(125, 140, 255, 0.12);
+}
+
+.contact-info__copy:focus-visible {
+  outline: 2px solid var(--c-green);
+  outline-offset: 2px;
+}
+
+.contact-info__copy-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Chip flotante que confirma la copia, además del ícono que ya cambia a un
+   check — ese cambio solo se nota si estás mirando el botón, esto lo hace
+   imposible de perder. Se autooculta con el mismo timeout que limpia
+   copiedId en Contact.tsx. */
+.contact-info__copy-tip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(74, 222, 128, 0.5);
+  background: rgba(20, 12, 38, 0.95);
+  color: var(--c-green);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(4px);
+}
+
+.contact-info__copy-tip--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Ventana del editor ---------- */
+
+.contact-editor {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--c-line-strong);
+  border-radius: 14px;
+  background: rgba(9, 12, 30, 0.8);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 30px 80px rgba(6, 6, 32, 0.55);
+  animation: contact-editor-in 0.6s ease both;
+}
+
+.contact-editor.is-shaking {
+  animation: contact-editor-shake 0.39s linear;
+}
+
+.contact-editor__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(125, 160, 255, 0.08),
+    transparent 65%
+  );
+  transition: opacity 0.3s;
+}
+
+.contact-editor:hover .contact-editor__glow {
+  opacity: 1;
+}
+
+.contact-editor__titlebar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--c-line);
+}
+
+.contact-editor__lights {
+  display: flex;
+  gap: 8px;
+}
+
+.contact-editor__lights span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.contact-editor__lights span:nth-child(2) {
+  background: #febc2e;
+}
+
+.contact-editor__lights span:nth-child(3) {
+  background: #28c840;
+}
+
+.contact-editor__tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--c-text);
+}
+
+.contact-editor__tab svg {
+  flex-shrink: 0;
+  color: var(--c-sky);
+}
+
+.contact-editor__dirty {
+  font-size: 10px;
+  color: transparent;
+  transition: color 0.3s;
+}
+
+.contact-editor__dirty.is-dirty {
+  color: var(--c-amber);
+}
+
+.contact-editor__path {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--c-dim);
+  white-space: nowrap;
+}
+
+/* ---------- Preview de código ---------- */
+
+.contact-code {
+  position: relative;
+  padding: 14px 0 6px;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.contact-code__line {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  transition: background 0.25s;
+}
+
+.contact-code__line.is-active {
+  background: rgba(74, 222, 128, 0.07);
+}
+
+.contact-code__num {
+  padding-right: 16px;
+  text-align: right;
+  color: var(--c-gutter);
+  transition: color 0.25s;
+}
+
+.contact-code__line.is-active .contact-code__num {
+  color: var(--c-green);
+}
+
+.contact-code__prop {
+  padding-left: 24px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tok-comment {
+  color: var(--c-dim);
+}
+
+.tok-keyword {
+  color: var(--c-purple);
+}
+
+.tok-ident {
+  color: var(--c-text-strong);
+}
+
+.tok-operator {
+  color: var(--c-cyan);
+}
+
+.tok-punct {
+  color: var(--c-text);
+}
+
+.tok-key {
+  color: var(--c-sky);
+}
+
+.tok-string {
+  color: var(--c-green);
+}
+
+.tok-placeholder {
+  color: var(--c-faint);
+}
+
+.contact-caret {
+  display: inline-block;
+  width: 2px;
+  height: 15px;
+  margin-left: 1px;
+  vertical-align: -2px;
+  background: var(--c-green);
+  animation: contact-caret-blink 1s steps(1) infinite;
+}
+
+.contact-caret--block {
+  width: 7px;
+  height: 14px;
+  margin-left: 2px;
+  background: var(--c-text);
+}
+
+/* ---------- Campos ---------- */
+
+.contact-editor__fields {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 22px 22px;
+}
+
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-field__box {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 20px;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 14px;
+  border: 1px solid rgba(125, 140, 255, 0.22);
+  border-radius: 9px;
+  background: rgba(12, 16, 38, 0.55);
+  cursor: text;
+  transition: border-color 0.2s, box-shadow 0.25s, background 0.2s;
+}
+
+.contact-field__box.is-error {
+  border-color: rgba(248, 113, 113, 0.65);
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.08);
+}
+
+.contact-field__box:focus-within {
+  border-color: rgba(74, 222, 128, 0.7);
+  background: rgba(14, 20, 46, 0.85);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1), 0 8px 30px rgba(74, 222, 128, 0.08);
+}
+
+.contact-field__box.is-error:focus-within {
+  border-color: rgba(248, 113, 113, 0.65);
+}
+
+.contact-field__prompt {
+  font-weight: 700;
+  line-height: 20px;
+  color: var(--c-dim);
+  transition: transform 0.2s, color 0.2s;
+}
+
+.contact-field__box.is-error .contact-field__prompt {
+  color: var(--c-red);
+}
+
+.contact-field__box:focus-within .contact-field__prompt {
+  color: var(--c-green);
+  transform: translateX(3px);
+}
+
+.contact-field__main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.contact-field__label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text-soft);
+  transition: color 0.2s;
+}
+
+.contact-field__box:focus-within .contact-field__label {
+  color: var(--c-text-strong);
+}
+
+.contact-field__counter {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--c-faint);
+}
+
+.contact-field__counter.is-near-limit {
+  color: var(--c-amber);
+}
+
+.contact-field__control {
+  width: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--c-text-strong);
+  caret-color: var(--c-green);
+}
+
+.contact-field__control::placeholder {
+  color: var(--c-faint);
+}
+
+.contact-field__control--multiline {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.contact-field__icon {
+  padding-top: 10px;
+  color: var(--c-icon-idle);
+  transition: color 0.2s;
+}
+
+.contact-field__box:focus-within .contact-field__icon {
+  color: var(--c-text-soft);
+}
+
+.contact-field__box.is-error .contact-field__icon {
+  color: var(--c-red);
+}
+
+.contact-field__box.is-valid .contact-field__icon {
+  color: var(--c-green);
+}
+
+.contact-field__error {
+  margin: 0;
+  padding-left: 14px;
+  font-size: 12px;
+  color: var(--c-red);
+}
+
+/* ---------- Acciones ---------- */
+
+.contact-editor__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.contact-btn-push {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 196px;
+  padding: 13px 18px;
+  border: 1px solid rgba(74, 222, 128, 0.75);
+  border-radius: 9px;
+  background: rgba(74, 222, 128, 0.07);
+  box-shadow: 0 0 18px rgba(74, 222, 128, 0.12);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--c-green);
+  transition: background 0.2s, box-shadow 0.25s, transform 0.15s;
+}
+
+.contact-btn-push:hover:not(:disabled) {
+  background: rgba(74, 222, 128, 0.16);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.12), 0 0 28px rgba(74, 222, 128, 0.28);
+  transform: translateY(-1px);
+}
+
+.contact-btn-push:focus-visible,
+.contact-btn-new:focus-visible {
+  outline: 2px solid var(--c-green);
+  outline-offset: 3px;
+}
+
+.contact-btn-push:disabled {
+  cursor: progress;
+}
+
+.contact-btn-push__spinner {
+  width: 18px;
+  text-align: center;
+}
+
+.contact-btn-push__arrow {
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.contact-btn-push:hover:not(:disabled) .contact-btn-push__arrow {
+  transform: translateX(4px);
+}
+
+.contact-btn-new {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  border: 1px solid rgba(125, 140, 255, 0.4);
+  border-radius: 9px;
+  background: rgba(125, 140, 255, 0.08);
+  font: inherit;
+  font-size: 14px;
+  color: var(--c-text);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.contact-btn-new:hover {
+  background: rgba(125, 140, 255, 0.16);
+  border-color: rgba(125, 140, 255, 0.6);
+}
+
+.contact-btn-new__plus {
+  color: var(--c-sky);
+}
+
+.contact-editor__shortcut {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--c-dim);
+}
+
+.contact-editor__shortcut kbd {
+  padding: 2px 6px;
+  border: 1px solid var(--c-line-strong);
+  border-radius: 4px;
+  font: inherit;
+  color: var(--c-text-soft);
+}
+
+/* ---------- Barra de estado ---------- */
+
+.contact-editor__statusbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  padding: 7px 16px;
+  border-top: 1px solid var(--c-line);
+  background: rgba(125, 140, 255, 0.05);
+  font-size: 11px;
+  color: var(--c-muted);
+}
+
+.contact-editor__branch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contact-editor__changes {
+  transition: color 0.3s;
+}
+
+.contact-editor__changes.is-dirty {
+  color: var(--c-amber);
+}
+
+.contact-editor__changes.is-synced {
+  color: var(--c-green);
+}
+
+.contact-editor__cursor {
+  margin-left: auto;
+}
+
+/* ---------- Terminal ---------- */
+
+.contact-terminal {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  /* Compensa el gap de la grilla y monta la terminal sobre el pie del editor. */
+  margin: calc(-56px - 26px) 0 0 clamp(12px, 5vw, 48px);
+  border: 1px solid rgba(125, 140, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(7, 9, 22, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 24px 60px rgba(4, 4, 24, 0.6);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.contact-terminal.is-entered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 800px) {
+  .contact-terminal {
+    margin: 0;
+  }
+}
+
+.contact-terminal__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--c-line);
+  font-size: 13px;
+}
+
+.contact-terminal__dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c-faint);
+  transition: background 0.3s;
+}
+
+.contact-terminal.is-running .contact-terminal__dot {
+  background: var(--c-amber);
+  animation: contact-dot-pulse 1.2s ease-in-out infinite;
+}
+
+.contact-terminal.is-done .contact-terminal__dot {
+  background: var(--c-green);
+}
+
+.contact-terminal.is-error .contact-terminal__dot {
+  background: var(--c-red);
+}
+
+.contact-terminal__title {
+  font-weight: 700;
+  color: var(--c-text-strong);
+}
+
+.contact-terminal__status {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+
+.contact-terminal.is-done .contact-terminal__status {
+  color: var(--c-green);
+}
+
+.contact-terminal.is-error .contact-terminal__status {
+  color: var(--c-red);
+}
+
+.contact-terminal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.contact-terminal__line {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.contact-terminal__prefix {
+  text-align: center;
+}
+
+.contact-terminal__text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.line-cmd .contact-terminal__prefix { color: var(--c-sky); }
+.line-cmd .contact-terminal__text { color: var(--c-text-strong); font-weight: 500; }
+.line-out .contact-terminal__text { color: var(--c-muted); }
+.line-run .contact-terminal__prefix { color: var(--c-amber); }
+.line-run .contact-terminal__text,
+.line-ok .contact-terminal__text { color: var(--c-text); }
+.line-ok .contact-terminal__prefix,
+.line-success .contact-terminal__prefix { color: var(--c-green); }
+.line-success .contact-terminal__text { color: var(--c-green); font-weight: 700; }
+.line-thanks { margin-top: 8px; }
+.line-thanks .contact-terminal__text { color: var(--c-text-strong); font-weight: 500; }
+.line-err .contact-terminal__prefix,
+.line-err .contact-terminal__text { color: var(--c-red); font-weight: 500; }
+.line-errsub .contact-terminal__text { color: var(--c-red-soft); }
+.line-hint { margin-top: 4px; }
+.line-hint .contact-terminal__prefix,
+.line-hint .contact-terminal__text { color: var(--c-amber); }
+
+/* ---------- Animaciones ---------- */
+
+@keyframes contact-editor-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes contact-editor-shake {
+  0%, 100% { transform: translateX(0); }
+  14% { transform: translateX(-9px); }
+  28% { transform: translateX(9px); }
+  42% { transform: translateX(-7px); }
+  57% { transform: translateX(7px); }
+  71% { transform: translateX(-4px); }
+  85% { transform: translateX(4px); }
+}
+
+@keyframes contact-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes contact-dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.6); }
+  50% { box-shadow: 0 0 0 5px rgba(251, 191, 36, 0); }
+}
+
+/* El atajo de teclado no aplica en pantallas táctiles. */
+@media (hover: none) {
+  .contact-editor__shortcut {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-editor__path {
+    display: none;
+  }
+
+  .contact-editor__fields {
+    padding: 14px 14px 18px;
+  }
+
+  .contact-code__line {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .contact-code__prop {
+    padding-left: 12px;
+  }
+
+  .contact-btn-push {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-editor,
+  .contact-editor.is-shaking,
+  .contact-caret,
+  .contact-terminal.is-running .contact-terminal__dot {
+    animation: none;
+  }
+
+  .contact-terminal,
+  .contact-field__prompt,
+  .contact-btn-push,
+  .contact-btn-push__arrow {
+    transition: opacity 0.2s ease;
+    transform: none !important;
+  }
+}

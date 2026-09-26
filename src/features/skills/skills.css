@@ -1,0 +1,310 @@
+.skills-section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  /* Top chico a propósito: scroll-margin-top (ver globals.css) ya se encarga
+     de despegarla del header al llegar por el nav. El bottom es más grande
+     para que, cuando el contenido entra completo en la pantalla, no se vea
+     ya el arranque de Proyectos pisándole el margen. */
+  padding: clamp(1.75rem, 4vh, 3rem) clamp(1.5rem, 6vw, 5rem) clamp(4rem, 10vh, 6rem);
+}
+
+/* Dims the page's own background scene behind this section — sits above the
+   fixed .scene-canvas but below .skills-content (z-index 1), so the tiles
+   and text stay at full brightness while the sky/clouds showing through
+   read a bit darker/moodier instead of competing with them. Fades out at
+   the top/bottom edges so there's no hard seam with About/Projects. */
+.skills-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 6, 18, 0) 0%,
+    rgba(6, 6, 18, 0.45) 18%,
+    rgba(6, 6, 18, 0.45) 82%,
+    rgba(6, 6, 18, 0) 100%
+  );
+}
+
+.skills-content {
+  position: relative;
+  z-index: 1;
+  max-width: 68rem;
+  width: 100%;
+  color: #fff;
+}
+
+.skills-eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c9b3ff;
+}
+
+.skills-heading {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.skills-paragraph {
+  margin: 0;
+  max-width: 34rem;
+  font-size: clamp(0.9rem, 1.15vw, 1rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ---------- Layout: category cards + 3D scene side by side ---------- */
+
+/* No fixed height here on purpose: .tech-ecosystem's own children are all
+   absolutely positioned (0 natural height), so with align-items: stretch
+   this row's height is simply whatever .skills-categories needs for its
+   own content — the scene then stretches to match. That keeps every card
+   sized to its real text (never clipped) while never reserving more
+   vertical space than the content actually needs (no page-level scroll). */
+.skills-layout {
+  display: flex;
+  align-items: stretch;
+  gap: 1.5rem;
+  margin-top: 0.35rem;
+}
+
+.skills-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 0 0 clamp(240px, 28vw, 320px);
+
+  padding: 0;
+  list-style: none;
+}
+
+.skills-category-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 28px -18px color-mix(in srgb, var(--category-color) 70%, transparent);
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+/* Synced with the 3D scene: hovering a tile there highlights the card for
+   its category (see onCategoryHover in Skills.tsx / useTechEcosystem). A
+   one-shot diagonal sheen sweeps across on activation for a bit of polish. */
+.skills-category-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    color-mix(in srgb, var(--category-color) 55%, white 45%) 50%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, background-position 0.9s ease;
+}
+
+/* Hovering the card itself (:hover) gets the same treatment as being
+   highlighted from the scene (.is-active) — one direction is a native CSS
+   hover, the other is driven by the raycasted tile hover in Skills.tsx. */
+.skills-category-card.is-active,
+.skills-category-card:hover {
+  background: color-mix(in srgb, var(--category-color) 14%, rgba(255, 255, 255, 0.08));
+  border-color: color-mix(in srgb, var(--category-color) 55%, transparent);
+  transform: translateY(-4px);
+  box-shadow:
+    0 18px 40px -16px color-mix(in srgb, var(--category-color) 75%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--category-color) 35%, transparent) inset;
+}
+
+.skills-category-card.is-active::after,
+.skills-category-card:hover::after {
+  opacity: 0.16;
+  background-position: -50% 0;
+}
+
+.skills-category-card__header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.3rem;
+}
+
+.skills-category-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--category-color) 85%, black 15%);
+  box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--category-color) 75%, transparent);
+  transition: box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skills-category-card.is-active .skills-category-card__icon,
+.skills-category-card:hover .skills-category-card__icon {
+  transform: scale(1.08);
+  box-shadow: 0 8px 22px -6px color-mix(in srgb, var(--category-color) 90%, transparent);
+}
+
+.skills-category-card__icon svg {
+  width: 60%;
+  height: 60%;
+  fill: #fff;
+  stroke: #fff;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+.skills-category-card__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.skills-category-card__description {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.42;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.skills-category-card__description strong {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+}
+
+/* ---------- Tech ecosystem panel ----------
+   Ported from the "Tech Ecosystem" Claude Design prototype, but rehoused as
+   a compact, borderless region instead of its own full-viewport hero — see
+   src/features/skills/lib/tech-ecosystem-scene.ts for why the canvas itself
+   renders transparent (no painted starfield/nebula backdrop). No glass card
+   here either: no background, border or blur, so the tiles float straight
+   on the page's own scene instead of over a second, separate surface. */
+
+.tech-ecosystem {
+  position: relative;
+  /* Longhand (not the `flex: 1` shorthand) on purpose: that shorthand forces
+     flex-basis to 0%, which would collapse this to 0 height once
+     .skills-layout switches to a column on mobile. flex-basis: auto defers
+     to the height .skills-layout stretches it to instead, in both axes. */
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+  min-width: 0;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  color: #eaf2ff;
+}
+
+.tech-ecosystem__stage {
+  position: absolute;
+  inset: 0;
+}
+
+/* A plain low-opacity label was hard to read against the brighter parts of
+   the scene behind it — a small glass pill (same treatment as the tile
+   hover label) keeps it legible no matter what's underneath. */
+.tech-ecosystem__hint {
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(10, 14, 32, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(234, 242, 255, 0.85);
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .skills-section {
+    text-align: center;
+  }
+
+  .skills-intro,
+  .skills-paragraph {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Stacked instead of side-by-side below this width, so the two columns no
+     longer need to share one height — let the row auto-size and give the
+     scene its own explicit height back. */
+  .skills-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .skills-categories {
+    flex: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: left;
+    overflow-y: visible;
+  }
+
+  .skills-category-card {
+    flex: 1 1 260px;
+  }
+
+  .tech-ecosystem {
+    height: clamp(380px, 60vh, 480px);
+  }
+}
+
+@media (max-width: 640px) {
+  .skills-section {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .tech-ecosystem {
+    height: clamp(340px, 65vh, 420px);
+  }
+
+  .tech-ecosystem__hint {
+    display: none;
+  }
+
+  .skills-category-card {
+    flex: 1 1 100%;
+  }
+}

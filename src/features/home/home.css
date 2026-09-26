@@ -1,0 +1,353 @@
+.home-hero {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(2rem, 6vw, 5rem);
+  min-height: 100vh;
+  padding: clamp(6rem, 12vh, 8rem) clamp(1.5rem, 6vw, 5rem) clamp(3rem, 6vh, 5rem)
+    clamp(1rem, 3vw, 2.5rem);
+  max-width: 90rem;
+  margin: 0 auto;
+}
+
+.home-hero__photo {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-hero__glow {
+  position: absolute;
+  inset: -12%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(157, 122, 255, 0.55),
+    rgba(157, 122, 255, 0.22) 55%,
+    rgba(157, 122, 255, 0) 75%
+  );
+  filter: blur(30px);
+}
+
+.home-hero__portrait-wrap {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  line-height: 0;
+}
+
+/* El drop-shadow vive en este wrapper (no en la img) porque un filter y un
+   mask-image en el mismo elemento se pintan en ese orden: el filter primero,
+   el mask después recortando al border-box de la imagen. Esa sombra de 40px
+   de blur quedaba cortada en seco justo en el límite rectangular del PNG en
+   vez de desvanecerse en el cielo. Al aislarla acá, ya no la afecta la
+   máscara de la imagen. */
+.home-hero__portrait-shadow {
+  display: block;
+  line-height: 0;
+  filter: drop-shadow(0 20px 40px rgba(15, 6, 32, 0.45));
+}
+
+.home-hero__portrait {
+  display: block;
+  width: clamp(15rem, 24vw, 23rem);
+  height: auto;
+  user-select: none;
+  /* purely decorative: never intercepts the pointer, so the sparkle canvas above it
+     always gets the hover events it needs */
+  pointer-events: none;
+  filter: saturate(0.9) contrast(0.96) brightness(1.03);
+  /* fades the photo's hard bottom crop into the illustrated sky instead of a sticker-like cutoff */
+  mask-image: linear-gradient(to bottom, #000 0%, #000 85%, transparent 99%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 85%, transparent 99%);
+}
+
+/* dust/sparkle overlay: sits on top of the untouched photo (never replaces it), traces
+   its silhouette, and drifts + scatters around the pointer. Screen blend keeps the dark
+   pixels of the photo (and the sky scene behind it) showing through untouched and only
+   the bright specks read.
+
+   Deliberately bigger than the photo — see particle-portrait.ts, which samples this
+   same margin — so the halo can spill out past the photo's own edges instead of being
+   clipped at its pixel bounds. Percentages here resolve against the wrap's box (left/
+   right against its width, top/bottom against its height), matching the margins used
+   in JS one for one. */
+.home-hero__portrait-sparkles {
+  position: absolute;
+  /* a <canvas> is a replaced element: with left+right set but width left auto, it falls
+     back to its intrinsic 300x150 size instead of stretching to fill the inset — so
+     width/height are spelled out explicitly here instead of relying on auto */
+  left: -40%;
+  top: -12%;
+  width: calc(100% + 80%);
+  height: calc(100% + 16%);
+  opacity: 0;
+  pointer-events: auto;
+  mix-blend-mode: screen;
+  transition: opacity 0.6s ease;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 88%, transparent 99%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 88%, transparent 99%);
+}
+
+.home-hero__portrait-wrap[data-particles='ready'] .home-hero__portrait-sparkles {
+  opacity: 1;
+}
+
+/* color-grades the photo with the scene's warm sunset + purple sky tones, clipped to the
+   portrait's own alpha shape via mask-image so it never spills onto the transparent background */
+.home-hero__portrait-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+  background:
+    radial-gradient(130% 90% at 50% 8%, rgba(255, 214, 179, 0.5) 0%, rgba(255, 214, 179, 0) 55%),
+    linear-gradient(
+      205deg,
+      rgba(183, 155, 255, 0.4) 0%,
+      rgba(109, 93, 159, 0.55) 55%,
+      rgba(109, 93, 159, 0) 88%
+    );
+}
+
+.home-hero__content {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 32rem;
+  max-width: 34rem;
+  color: #fff;
+}
+
+.home-hero__greeting {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.home-hero__name {
+  margin: 0;
+  font-size: clamp(2.75rem, 6vw, 4.75rem);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.home-hero__name-accent {
+  display: inline-block;
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 500;
+  background: linear-gradient(120deg, #ffe3d0 0%, #e7c6ff 55%, #b79bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.home-hero__role {
+  display: inline-block;
+  margin: 0.85rem 0 0;
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 37ch;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: top;
+  border-right: 2px solid rgba(255, 255, 255, 0.75);
+  animation:
+    home-role-typing 2.4s steps(37, end) 0.4s 1 both,
+    home-role-caret 0.8s step-end infinite;
+}
+
+/* types once and stays fully written; the caret keeps blinking afterwards */
+@keyframes home-role-typing {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 37ch;
+  }
+}
+
+@keyframes home-role-caret {
+  0%,
+  100% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: rgba(255, 255, 255, 0.75);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__role {
+    width: 37ch;
+    animation: none;
+    border-right-color: transparent;
+  }
+}
+
+.home-hero__description {
+  margin: 1.1rem 0 0;
+  max-width: 32rem;
+  font-size: clamp(0.92rem, 1.2vw, 1.02rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Difumado más oscuro que el genérico de section-text-scrim (mejor
+   contraste sobre el retrato/partículas del fondo) pero con menos
+   spread/blur que el default, para que se lea como un oscurecido sutil
+   pegado al párrafo y no como un halo/blob visible. */
+.home-hero__description.section-text-scrim::before {
+  inset: -1.25rem -1.75rem;
+  filter: blur(6px);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 6, 20, 0.74) 0%,
+    rgba(10, 6, 20, 0.46) 55%,
+    rgba(10, 6, 20, 0) 85%
+  );
+}
+
+.home-hero__highlight {
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 22px rgba(199, 163, 255, 0.4);
+}
+
+.home-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+.home-hero__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-hero__btn:hover {
+  transform: translateY(-2px);
+}
+
+.home-hero__btn--solid {
+  color: #241640;
+  background: #f5f0ff;
+  box-shadow: 0 10px 24px rgba(15, 6, 32, 0.35);
+}
+
+.home-hero__btn--solid:hover {
+  background: #fff;
+}
+
+.home-hero__btn--glass {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.home-hero__btn--glass:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 900px) {
+  .home-hero {
+    flex-direction: column;
+    text-align: center;
+    padding-top: clamp(3rem, 20vh, 1.5rem);
+  }
+
+  .home-hero__content {
+    max-width: 30rem;
+  }
+
+  .home-hero__description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-hero__actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-hero__portrait {
+    width: 12rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-hero {
+    gap: 1.1rem;
+    padding-top: 2.25rem;
+    padding-bottom: 2rem;
+  }
+
+  /* la foto trae un fundido transparente en su 15% inferior (ver mask-image
+     en .home-hero__portrait) para desvanecerse en el cielo, así que el gap
+     del flex ya arranca después de ese margen invisible: se compensa con un
+     margen negativo en vez de subir el gap, para no pegar el texto al recorte
+     visible de la imagen. */
+  .home-hero__content {
+    margin-top: -1rem;
+  }
+
+  .home-hero__greeting {
+    margin: 0 0 0.15rem;
+  }
+
+  .home-hero__role {
+    margin: 0.4rem 0 0;
+  }
+
+  .home-hero__description {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .home-hero__actions {
+    gap: 0.55rem;
+    margin-top: 0.6rem;
+  }
+
+  .home-hero__btn {
+    padding: 0.55rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  /* En mobile el texto queda centrado y más angosto sobre el retrato, con
+     menos margen a los costados para que el fondo claro de la escena se
+     escape por los bordes — se oscurece más que en desktop para que las
+     letras se sigan leyendo bien ahí. */
+  .home-hero__description.section-text-scrim::before {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(10, 6, 20, 0.88) 0%,
+      rgba(10, 6, 20, 0.6) 55%,
+      rgba(10, 6, 20, 0) 85%
+    );
+  }
+}

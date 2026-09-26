@@ -1,0 +1,313 @@
+.scene-canvas {
+  position: fixed;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* alto fijo en vez de resolver contra el viewport dinámico: en mobile la
+     barra de direcciones se oculta/reaparece al scrollear y eso cambia la
+     altura real del viewport en vivo, haciendo que un fixed con inset:0 se
+     redimensione visiblemente. lvh usa el tamaño "grande" (como si la barra
+     estuviera siempre oculta): es un valor fijo que no cambia mientras se
+     scrollea (a diferencia de dvh) y, al ser el más alto posible, siempre
+     cubre el viewport real aunque la barra esté visible (a diferencia de
+     svh, que se quedaba corto y dejaba ver el fondo negro del body debajo).
+     El 100vh de arriba queda como fallback para navegadores viejos que no
+     soportan lvh. */
+  height: 100vh;
+  height: 100lvh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #6d5d9f;
+  pointer-events: none;
+}
+
+/* night prototype, two stacked blend layers over the painted sunset:
+   1) ::before recolors hue+saturation to a deep blue while keeping the
+      artwork's own luminance (mix-blend-mode: color) — this is what turns
+      warm orange/pink into night blue instead of the muddy brown a plain
+      darken+desaturate gives
+   2) ::after darkens/vignettes on top (multiply), heavier near the top */
+.scene-canvas::before {
+  content: '';
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(200deg, #16244f 0%, #1c3170 40%, #2a3d78 70%, #3a3564 100%);
+  mix-blend-mode: color;
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+
+.scene-canvas.is-night::before {
+  opacity: 0.92;
+}
+
+.scene-canvas::after {
+  content: '';
+  position: absolute;
+  z-index: 11;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(4, 7, 26, 0.62) 0%, rgba(8, 10, 32, 0.32) 40%, rgba(14, 12, 30, 0.22) 100%);
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+
+.scene-canvas.is-night::after {
+  opacity: 1;
+}
+
+.scene-canvas.is-night .scene-sky,
+.scene-canvas.is-night .scene-cloud-interactive {
+  filter: brightness(0.75);
+  transition: filter 1.1s ease;
+}
+
+.scene-sky,
+.scene-cloud-interactive {
+  transition: filter 1.1s ease;
+}
+
+.scene-night-moon {
+  position: absolute;
+  z-index: 12;
+  top: 10%;
+  right: 16%;
+  width: clamp(4rem, 7vw, 7rem);
+  height: clamp(4rem, 7vw, 7rem);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 1.1s ease, transform 1.1s ease;
+  filter: drop-shadow(0 0 1.8rem rgba(230, 236, 255, 0.55)) drop-shadow(0 0 4rem rgba(180, 200, 255, 0.3));
+}
+
+.scene-canvas.is-night .scene-night-moon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.scene-night-moon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.scene-shooting-star {
+  position: absolute;
+  z-index: 12;
+  top: 8%;
+  left: 55%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene-canvas.is-night .scene-shooting-star {
+  animation: scene-shooting-star 7s ease-in 1.4s infinite;
+}
+
+@keyframes scene-shooting-star {
+  0%, 8% { opacity: 0; transform: translate(0, 0); }
+  9% { opacity: 1; }
+  22% {
+    opacity: 0;
+    transform: translate(-16rem, 9rem);
+    box-shadow: -1px -1px 0 1px rgba(255, 255, 255, 0);
+  }
+  100% { opacity: 0; transform: translate(-16rem, 9rem); }
+}
+
+.scene-shooting-star::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 5rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8));
+  transform-origin: right center;
+  transform: translateY(-50%) rotate(29deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-canvas.is-night .scene-shooting-star {
+    animation: none;
+  }
+}
+
+.scene-sky,
+.scene-sun {
+  position: absolute;
+  display: block;
+  max-width: none;
+  user-select: none;
+}
+
+.scene-sky {
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scene-sun {
+  z-index: 1;
+  width: clamp(15rem, 32vw, 35rem);
+  left: 20%;
+  bottom: clamp(10%, 18vh, 22%);
+  transform: translateX(-20%);
+}
+
+/* twinkling dots layered over the painted stars in the sky artwork's upper band */
+.scene-stars {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+}
+
+.scene-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  animation-name: star-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.scene-star--glow {
+  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.65);
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.6); }
+  50% { opacity: var(--star-peak, 0.8); transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-star {
+    animation: none;
+    opacity: var(--star-peak, 0.8);
+  }
+}
+
+.scene-cloud-interactive {
+  position: absolute;
+}
+
+/* front-left hero cloud */
+.scene-cloud-interactive--1 {
+  z-index: 3;
+  left: 40%;
+  bottom: -10%;
+  width: clamp(42rem, 50vw, 94rem);
+  height: clamp(18rem, 25vw, 41rem);
+  transform: translateX(-50%);
+}
+
+/* small wisp tucked low-left, peeking out from behind the front cloud */
+.scene-cloud-interactive--2 {
+  z-index: 2;
+  right: 17%;
+  bottom: -5%;
+  width: clamp(20rem, 50vw, 34rem);
+  height: clamp(9rem, 20vw, 15rem);
+  animation: cloud-drift 22s ease-in-out infinite alternate;
+  animation-delay: -6s;
+}
+
+/* rounded puff, upper right */
+.scene-cloud-interactive--3 {
+  z-index: 3;
+  bottom: -10%;
+  right: -15%;
+  width: clamp(30rem, 48vw, 58rem);
+  height: clamp(17rem, 27vw, 33rem);
+  animation: cloud-drift 30s ease-in-out infinite alternate;
+  animation-delay: -12s;
+}
+/* wide wispy streak, high and faint: reads as background haze */
+.scene-cloud-interactive--4 {
+  z-index: 4;
+  bottom: 5%;
+  right: -30%;
+  width: clamp(56rem, 92vw, 124rem);
+  height: clamp(12rem, 25vw, 22rem);
+  opacity: 0.8;
+  animation: cloud-drift 42s ease-in-out infinite alternate;
+  animation-delay: -20s;
+}
+
+/* gentle side-to-side sway, amplitude relative to each cloud's own width */
+@keyframes cloud-drift {
+  0% { transform: translateX(-1.5%); }
+  50% { transform: translateX(1.5%); }
+  100% { transform: translateX(-1.5%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-cloud-interactive--2,
+  .scene-cloud-interactive--3,
+  .scene-cloud-interactive--4 {
+    animation: none;
+  }
+}
+/* front-right hero cloud, densest and largest */
+.scene-cloud-interactive--5 {
+  z-index: 1;
+  left: -28%;
+  bottom: -5%;
+  width: clamp(46rem, 78vw, 98rem);
+  height: clamp(20rem, 30vw, 50rem);
+}
+
+@media (max-width: 640px) {
+  .scene-sky {
+    object-position: 52% center;
+  }
+
+  .scene-sun {
+    width: 19rem;
+    bottom: 25%;
+  }
+
+  .scene-cloud-interactive--4 {
+    top: 2%;
+    width: 46rem;
+    height: 10rem;
+  }
+
+  .scene-cloud-interactive--3 {
+    top: 16%;
+    right: -18%;
+    width: 26rem;
+    height: 15rem;
+  }
+
+  .scene-cloud-interactive--2 {
+    left: -6%;
+    bottom: -2%;
+    width: 17rem;
+  }
+
+  .scene-cloud-interactive--1 {
+    width: 44rem;
+    height: 17rem;
+    bottom: -2%;
+  }
+
+  .scene-cloud-interactive--5 {
+    right: -10%;
+    bottom: -4%;
+    width: 40rem;
+    height: 22rem;
+  }
+}

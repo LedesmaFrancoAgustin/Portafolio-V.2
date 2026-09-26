@@ -1,0 +1,376 @@
+.project-detail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: clamp(6rem, 14vh, 9rem) clamp(1.5rem, 6vw, 5rem) clamp(4rem, 8vh, 6rem);
+}
+
+.project-detail__content {
+  position: relative;
+  z-index: 1;
+  max-width: 52rem;
+  width: 100%;
+  color: #fff;
+}
+
+.project-detail__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+/* Oscurecido más marcado y ceñido que el section-text-scrim genérico del
+   contenedor (mismo criterio que .home-hero__content): esta es la primera
+   pantalla del detalle, sola sobre el fondo estrellado/nubes, y necesita
+   mejor contraste sin leerse como un panel o tarjeta. */
+.project-detail__hero.section-text-scrim::before {
+  inset: -1.5rem -2rem;
+  filter: blur(6px);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 6, 20, 0.72) 0%,
+    rgba(10, 6, 20, 0.44) 55%,
+    rgba(10, 6, 20, 0) 85%
+  );
+}
+
+.project-detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+}
+
+.project-detail__back:hover {
+  color: #fff;
+}
+
+.project-detail__title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.project-detail__title-icon {
+  width: clamp(1.9rem, 3vw, 2.4rem);
+  height: clamp(1.9rem, 3vw, 2.4rem);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.project-detail__meta {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #c9b3ff;
+}
+
+.project-detail__summary {
+  margin: 0;
+  max-width: 42rem;
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.project-detail__tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-detail__tech-tag {
+  padding: 0.32rem 0.75rem;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #89ddff;
+  /* Base oscura propia además del tinte celeste: sobre la escena clara
+     (nubes) el tinte solo se pierde, igual que en project-card--featured. */
+  background: linear-gradient(rgba(137, 221, 255, 0.12), rgba(137, 221, 255, 0.12)),
+    rgba(10, 8, 26, 0.72);
+  border: 1px solid rgba(137, 221, 255, 0.35);
+}
+
+.project-detail__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+/* Mismo botón estilo "git" que .project-card__link en la home (variante
+   destacada: fondo oscuro propio, ya que acá también queda directamente
+   sobre la escena, sin fondo de card). */
+.project-detail__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.55rem 1rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(10, 6, 22, 0.65);
+  font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.project-detail__link:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(10, 6, 22, 0.8);
+  transform: translateY(-1px);
+}
+
+.project-detail__section {
+  margin-top: clamp(2.5rem, 6vh, 3.5rem);
+  padding-top: clamp(2.5rem, 6vh, 3.5rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Mismo criterio que .project-detail__hero: oscurecido más marcado y ceñido
+   que el section-text-scrim genérico del contenedor, para que el título y el
+   texto de esta sección puntual ganen contraste sobre la escena. */
+.project-detail__section.section-text-scrim::before {
+  inset: -1.5rem -2rem;
+  filter: blur(6px);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 6, 20, 0.72) 0%,
+    rgba(10, 6, 20, 0.44) 55%,
+    rgba(10, 6, 20, 0) 85%
+  );
+}
+
+.project-detail__section-heading {
+  margin: 0 0 1rem;
+  font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.project-detail__section-text {
+  margin: 0;
+  max-width: 42rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.project-detail__section-text + .project-detail__section-text {
+  margin-top: 1rem;
+}
+
+.project-detail__feature-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-detail__feature-item {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.project-detail__feature-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #c9b3ff;
+}
+
+.project-detail__architecture-list {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.5rem 0 0;
+}
+
+/* Mismo card "glass" que .skills-category-card en la home (blur + lift +
+   glow al hover), con el acento violeta que ya usa el resto del detalle en
+   vez del --category-color por tecnología que no aplica acá. */
+.project-detail__architecture-item {
+  padding: 1.1rem 1.3rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 28px -18px rgba(201, 179, 255, 0.6);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease,
+    border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.project-detail__architecture-item:hover {
+  background: rgba(201, 179, 255, 0.12);
+  border-color: rgba(201, 179, 255, 0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -16px rgba(201, 179, 255, 0.55),
+    0 0 0 1px rgba(201, 179, 255, 0.3) inset;
+}
+
+.project-detail__architecture-title {
+  margin: 0 0 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.project-detail__architecture-description {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.project-detail__image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.9rem;
+}
+
+.project-detail__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.project-detail__image--single {
+  aspect-ratio: 16 / 9;
+}
+
+/* Thumbnail clickeable que abre la imagen ampliada (.project-lightbox, ver
+   ProjectImageLightbox), igual que las capturas de las cards en la home. */
+.project-detail__image-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.project-detail__image-button:hover .project-detail__image,
+.project-detail__image-button:focus-visible .project-detail__image {
+  transform: scale(1.02);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.project-detail__image-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 3px;
+  border-radius: 1rem;
+}
+
+.project-detail__subsection + .project-detail__subsection {
+  margin-top: 1.75rem;
+}
+
+.project-detail__subheading {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.project-detail__nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: clamp(3rem, 7vh, 4rem);
+  padding-top: clamp(2rem, 5vh, 3rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Mismo botón "git push" del formulario de contacto (borde + fondo + glow
+   verdes, tipografía monoespaciada), como CTA para pasar al próximo proyecto. */
+.project-detail__nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.6rem;
+  font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Base oscura propia además del tinte verde: esta card suele caer sobre la
+     parte clara de la escena (nubes), donde el tinte solo se pierde, igual
+     que en .project-detail__tech-tag. */
+  background: linear-gradient(rgba(74, 222, 128, 0.1), rgba(74, 222, 128, 0.1)),
+    rgba(10, 8, 26, 0.72);
+  border: 1px solid rgba(74, 222, 128, 0.75);
+  box-shadow: 0 0 18px rgba(74, 222, 128, 0.12);
+  text-decoration: none;
+  transition: background 0.2s ease, box-shadow 0.25s ease, transform 0.15s ease;
+}
+
+.project-detail__nav-link:hover {
+  background: linear-gradient(rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.2)),
+    rgba(10, 8, 26, 0.8);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.12), 0 0 28px rgba(74, 222, 128, 0.28);
+  transform: translateY(-2px);
+}
+
+.project-detail__nav-link--next {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.project-detail__nav-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4ade80;
+}
+
+.project-detail__nav-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #eafff2;
+}
+
+@media (max-width: 640px) {
+  .project-detail__nav {
+    grid-template-columns: 1fr;
+  }
+
+  .project-detail__nav-link--next {
+    text-align: left;
+    align-items: flex-start;
+  }
+}

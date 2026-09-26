@@ -1,0 +1,6 @@
+/* SceneCanvas is position:fixed with z-index:0; without an explicit stacking
+   context here, in-flow content paints *behind* it instead of on top. */
+.app-main {
+  position: relative;
+  z-index: 1;
+}

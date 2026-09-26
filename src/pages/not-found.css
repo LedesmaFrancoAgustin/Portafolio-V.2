@@ -1,0 +1,53 @@
+.not-found-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: clamp(6rem, 14vh, 9rem) clamp(1.5rem, 6vw, 5rem);
+  text-align: center;
+}
+
+.not-found-content {
+  position: relative;
+  z-index: 1;
+  max-width: 32rem;
+  color: #fff;
+}
+
+.not-found-eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #c9b3ff;
+}
+
+.not-found-heading {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+}
+
+.not-found-paragraph {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.not-found-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #120a26;
+  background: #c9b3ff;
+  text-decoration: none;
+}
+
+.not-found-link:hover {
+  background: #ddccff;
+}

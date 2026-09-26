@@ -1,0 +1,163 @@
+.naruto-game__wrap {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.naruto-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.naruto-game__stage {
+  position: relative;
+  width: 100%;
+  max-width: 42rem;
+  aspect-ratio: 4 / 3;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #05070f;
+}
+
+.naruto-game__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.naruto-game__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background: rgba(5, 7, 15, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.naruto-game__overlay--gameover {
+  cursor: default;
+}
+
+.naruto-game__overlay-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.naruto-game__overlay-hint {
+  max-width: 22rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.naruto-game__retry {
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #120a26;
+  background: #c9b3ff;
+  border: 1px solid #c9b3ff;
+  cursor: pointer;
+}
+
+.naruto-game__retry:hover {
+  background: #ddccff;
+}
+
+.naruto-game__dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 3rem);
+  grid-template-rows: repeat(3, 3rem);
+  gap: 0.35rem;
+  user-select: none;
+  touch-action: none;
+}
+
+.naruto-game__dpad-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  font-size: 1.2rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.naruto-game__dpad-btn:active {
+  background: rgba(201, 179, 255, 0.35);
+  border-color: #c9b3ff;
+}
+
+.naruto-game__dpad-btn--up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.naruto-game__dpad-btn--left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.naruto-game__dpad-btn--down {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.naruto-game__dpad-btn--right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.naruto-game-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(8, 4, 18, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.naruto-game-modal__content {
+  width: 100%;
+  max-width: 42rem;
+}
+
+.naruto-game-modal__close {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.naruto-game-modal__close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
