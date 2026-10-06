@@ -48,7 +48,7 @@
 .home-hero__portrait-shadow {
   display: block;
   line-height: 0;
-  filter: drop-shadow(0 20px 40px rgba(15, 6, 32, 0.45));
+  filter: drop-shadow(0 4px 20px rgba(185, 169, 255, 0.9));
 }
 
 .home-hero__portrait {
@@ -59,8 +59,7 @@
   /* purely decorative: never intercepts the pointer, so the sparkle canvas above it
      always gets the hover events it needs */
   pointer-events: none;
-  filter: saturate(0.9) contrast(0.96) brightness(1.03);
-  /* fades the photo's hard bottom crop into the illustrated sky instead of a sticker-like cutoff */
+  /* colores originales de la foto (igual que el portafolio anterior); solo se conserva el fundido inferior hacia el cielo */
   mask-image: linear-gradient(to bottom, #000 0%, #000 85%, transparent 99%);
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 85%, transparent 99%);
 }
@@ -99,6 +98,7 @@
 /* color-grades the photo with the scene's warm sunset + purple sky tones, clipped to the
    portrait's own alpha shape via mask-image so it never spills onto the transparent background */
 .home-hero__portrait-tint {
+  display: none;
   position: absolute;
   inset: 0;
   z-index: 2;
@@ -270,6 +270,15 @@
 
 .home-hero__btn--glass:hover {
   background: rgba(255, 255, 255, 0.18);
+}
+
+/* Notebook/desktop: el contenido se centra y deja un margen izquierdo mayor
+   para que la barra social lateral no tape la foto. */
+@media (min-width: 901px) {
+  .home-hero {
+    justify-content: center;
+    padding-left: clamp(5rem, 9vw, 9rem);
+  }
 }
 
 @media (max-width: 900px) {

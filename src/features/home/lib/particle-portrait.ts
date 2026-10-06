@@ -25,8 +25,8 @@ const DRIFT_AMPLITUDE = 0.006
 
 // halo shaping: probability a candidate point spawns a particle. The field is a soft
 // circle centred on the photo — dense-ish near the middle, fading smoothly to a thin
-// bleed past its edge — with the photo itself still kept mostly clear.
-const ON_BODY_CHANCE = 0.004
+// bleed past its edge — with the photo itself (face and torso) kept fully clear.
+const ON_BODY_CHANCE = 0
 const CIRCLE_MAX_CHANCE = 0.1
 const STRAY_CHANCE = 0.007
 const CIRCLE_INNER_RADIUS = 0.3

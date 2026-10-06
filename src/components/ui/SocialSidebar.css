@@ -121,6 +121,13 @@
   transform: translateY(-2px);
 }
 
+/* En desktop la barra queda centrada a media altura de la pantalla. */
+@media (min-width: 641px) {
+  .social-sidebar {
+    top: 50%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .social-sidebar,
   .social-sidebar__toggle-icon,
