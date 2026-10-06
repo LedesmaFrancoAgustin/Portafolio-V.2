@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import skyDayBase from '../../assets/images/scene/sky/Fondo.webp'
 import { StarField } from './StarField'
 import cloud1 from '../../assets/images/scene/interactive-cloud/Cloud-1.webp'
@@ -6,6 +6,7 @@ import cloud2 from '../../assets/images/scene/interactive-cloud/cloud-2.webp'
 import cloud3 from '../../assets/images/scene/interactive-cloud/Cloud-3.webp'
 import cloud4 from '../../assets/images/scene/interactive-cloud/Cloud-4.webp'
 import cloud5 from '../../assets/images/scene/interactive-cloud/Cloud-5.webp'
+import { SceneLoader } from './SceneLoader'
 import '../scene.css'
 
 const CLOUD_EFFECT = {
@@ -84,6 +85,33 @@ function useIsMobileViewport() {
   return isMobile
 }
 
+// sin evento de "listo" de una nube (error de red, WebGL caído) el loader no
+// puede quedar colgado: pasado este tiempo se da la escena por cargada
+const LOAD_TIMEOUT_MS = 10000
+
+function useCloudsProgress(sceneReady: boolean, total: number) {
+  const hostRef = useRef<HTMLDivElement>(null)
+  const [loaded, setLoaded] = useState(0)
+  const [timedOut, setTimedOut] = useState(false)
+
+  useEffect(() => {
+    const host = hostRef.current
+    if (!host) return
+    const onReady = () => setLoaded((n) => n + 1)
+    host.addEventListener('cloudready', onReady)
+    const t = window.setTimeout(() => setTimedOut(true), LOAD_TIMEOUT_MS)
+    return () => {
+      host.removeEventListener('cloudready', onReady)
+      window.clearTimeout(t)
+    }
+  }, [])
+
+  const done = timedOut || (sceneReady && loaded >= total)
+  // el módulo de nubes cuenta como primer tramo; luego avanza con cada nube lista
+  const progress = done ? 1 : sceneReady ? 0.15 + 0.85 * (loaded / total) : 0.05
+  return { hostRef, done, progress }
+}
+
 interface SceneCanvasProps {
   isNight: boolean
 }
@@ -92,10 +120,16 @@ export function SceneCanvas({ isNight }: SceneCanvasProps) {
   const isMobile = useIsMobileViewport()
   const sceneReady = useDeferredScene()
   const scale = isMobile ? MOBILE_DENSITY_FACTOR : 1
+  const cloudCount = isMobile ? 4 : 5
+  const { hostRef, done, progress } = useCloudsProgress(sceneReady, cloudCount)
   const cloudEffect = isNight ? { ...CLOUD_EFFECT, glow: 0.35 } : CLOUD_EFFECT
 
   return (
-    <div className={`scene-canvas${isNight ? ' is-night' : ''}`} aria-hidden="true">
+    <div
+      ref={hostRef}
+      className={`scene-canvas${isNight ? ' is-night' : ''}${done ? ' is-loaded' : ''}`}
+      aria-hidden="true"
+    >
       <img className="scene-sky" src={skyDayBase} alt="" />
       <div className="scene-night-moon">
         <svg viewBox="0 0 100 100">
@@ -107,6 +141,7 @@ export function SceneCanvas({ isNight }: SceneCanvasProps) {
         </svg>
       </div>
       <div className="scene-shooting-star" />
+      <SceneLoader progress={progress} done={done} />
       {sceneReady && (
         <>
           <StarField night={isNight} />

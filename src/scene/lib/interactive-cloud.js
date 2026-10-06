@@ -273,7 +273,7 @@
       cx.clearRect(0, 0, w, h);
       cx.drawImage(img, 0, 0);
       let data;
-      try { data = cx.getImageData(0, 0, w, h).data; } catch (e) { this.n = 0; return; }
+      try { data = cx.getImageData(0, 0, w, h).data; } catch (e) { this.n = 0; this.dispatchEvent(new CustomEvent('cloudready', { bubbles: true })); return; }
 
       // compact alpha-only lookup for pointer hit-testing (see onPointer)
       const alphaMap = new Uint8Array(w * h);
@@ -341,6 +341,7 @@
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, this.statBuf);
       gl.bufferData(gl.ARRAY_BUFFER, stat, gl.STATIC_DRAW);
+      this.dispatchEvent(new CustomEvent('cloudready', { bubbles: true }));
     }
 
     resize(){
