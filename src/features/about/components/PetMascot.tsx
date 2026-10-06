@@ -25,6 +25,24 @@ export function PetMascot({ eyeRef, onPausedChange }: PetMascotProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hovered])
 
+  // El sprite mide 39 px de ancho: el ancho se ajusta a un múltiplo entero en
+  // píxeles de DISPOSITIVO. Con zoom/DPR fraccionario (125 %, 150 %) 195 px CSS
+  // no caen en píxeles enteros y el escalado se ve borroso.
+  useEffect(() => {
+    const el = stageRef.current
+    if (!el) return
+
+    const snap = () => {
+      const dpr = window.devicePixelRatio || 1
+      const target = window.matchMedia('(max-width: 640px)').matches ? 117 : 195
+      const scale = Math.max(1, Math.round((target * dpr) / 39))
+      el.style.setProperty('--pet-width', `${(scale * 39) / dpr}px`)
+    }
+    snap()
+    window.addEventListener('resize', snap)
+    return () => window.removeEventListener('resize', snap)
+  }, [])
+
   useEffect(() => {
     const el = stageRef.current
     if (!el) return

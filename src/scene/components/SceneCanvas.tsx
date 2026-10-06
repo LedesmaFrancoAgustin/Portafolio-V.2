@@ -13,7 +13,7 @@ const CLOUD_EFFECT = {
   strength: 0.28,
   glow: 1,
   erode: 1,
-  breathe: 3.5,
+  breathe: 4,
 }
 
 // nubes hero (frente, más grandes) mantienen más partículas; las de fondo/haze
@@ -28,7 +28,7 @@ const DENSITY_HAZE = 0.18
 // nube (que no escala con el tamaño en pantalla, ver interactive-cloud.js)
 // se reduce con un factor aparte
 const MOBILE_QUERY = '(max-width: 640px)'
-const MOBILE_DENSITY_FACTOR = 0.4
+const MOBILE_DENSITY_FACTOR = 0.25
 
 // Las nubes (5 contextos WebGL + simulación de partículas) y las estrellas son
 // pura decoración: se montan recién cuando el navegador está ocioso después del
@@ -112,7 +112,10 @@ export function SceneCanvas({ isNight }: SceneCanvasProps) {
           <StarField night={isNight} />
           <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--4" src={cloud4} {...cloudEffect} density={DENSITY_HAZE * scale} />
           <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--3" src={cloud3} {...cloudEffect} density={DENSITY_MID * scale} />
-          <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--2" src={cloud2} {...cloudEffect} density={DENSITY_WISP * scale} />
+          {/* en mobile se omite el wisp chico (el menos visible): una simulación WebGL menos */}
+          {!isMobile && (
+            <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--2" src={cloud2} {...cloudEffect} density={DENSITY_WISP * scale} />
+          )}
           <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--1" src={cloud1} {...cloudEffect} density={DENSITY_HERO * scale} />
           <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--5" src={cloud5} {...cloudEffect} density={DENSITY_HERO * scale} />
         </>

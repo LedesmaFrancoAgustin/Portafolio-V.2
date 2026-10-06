@@ -311,7 +311,10 @@
      del flex ya arranca después de ese margen invisible: se compensa con un
      margen negativo en vez de subir el gap, para no pegar el texto al recorte
      visible de la imagen. */
+  /* width fijo (no shrink-to-fit): si no, el ancho del rol al terminar de
+     tipearse (37ch) ensancha el contenedor y el párrafo se reacomoda. */
   .home-hero__content {
+    width: 100%;
     margin-top: -1rem;
   }
 
@@ -319,8 +322,12 @@
     margin: 0 0 0.15rem;
   }
 
+  /* 37ch ≈ 20 × font-size: en pantallas angostas se reduce la fuente para
+     que el rol entre completo en el contenedor. */
   .home-hero__role {
     margin: 0.4rem 0 0;
+    font-size: clamp(0.8rem, 4.5vw, 1rem);
+    max-width: 100%;
   }
 
   .home-hero__description {
