@@ -281,6 +281,16 @@
   }
 }
 
+/* Pantallas anchas: en vez de centrar el bloque en el medio, se ancla hacia la
+   izquierda (el max-width + margin auto lo dejaba demasiado al centro). */
+@media (min-width: 1280px) {
+  .home-hero {
+    justify-content: flex-start;
+    margin-left: 0;
+    padding-left: 12vw;
+  }
+}
+
 @media (max-width: 900px) {
   .home-hero {
     flex-direction: column;
