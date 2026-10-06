@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
+// El sprite se embebe como data URI (ver assetsInlineLimit en vite.config.ts).
 import petPixelStrip from '../../../assets/images/about/pet-pixel-strip.png'
 
 interface PetMascotProps {
