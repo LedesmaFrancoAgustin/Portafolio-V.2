@@ -1,4 +1,4 @@
-import{T as Ui,L as wr,c as Ko,a as Qo}from"./Skills-D8o8NAsZ.js";import"./index-oWnATJ5F.js";/**
+import{T as Ui,L as wr,c as Ko,a as Qo}from"./Skills-B84cJrjw.js";import"./index-Dzcf4GAb.js";/**
  * @license
  * Copyright 2010-2023 Three.js Authors
  * SPDX-License-Identifier: MIT
