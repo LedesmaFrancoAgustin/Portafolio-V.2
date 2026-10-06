@@ -679,9 +679,12 @@
   animation-play-state: paused;
 }
 
+/* El sprite es de 39×24 px: el ancho debe ser múltiplo entero de 39 (3×, 4×,
+   5×) o `image-rendering: pixelated` reparte píxeles desiguales y la mascota
+   se ve deforme. No usar clamp()/vw acá. */
 .about-mascot-wrap {
   position: relative;
-  width: clamp(120px, 24vw, 180px);
+  width: 195px;
   animation: about-mascot-bob 6s ease-in-out infinite;
   z-index: 1;
 }
@@ -1189,6 +1192,10 @@
 
   .about-mascot-stage {
     margin-top: 0;
+  }
+
+  .about-mascot-wrap {
+    width: 117px;
   }
 
   .about-actions {

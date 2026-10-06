@@ -230,6 +230,19 @@
 .tech-ecosystem__stage {
   position: absolute;
   inset: 0;
+  /* En mobile, tocar un tile hace que el navegador pinte todo el contenedor
+     con su resaltado azul (tap highlight) y/o lo seleccione como texto. La
+     escena ya muestra su propio feedback del tap, así que se desactivan. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  outline: none;
+}
+
+.tech-ecosystem__stage canvas {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 /* A plain low-opacity label was hard to read against the brighter parts of

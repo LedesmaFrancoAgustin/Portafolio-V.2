@@ -6,7 +6,6 @@ import cloud2 from '../../assets/images/scene/interactive-cloud/cloud-2.webp'
 import cloud3 from '../../assets/images/scene/interactive-cloud/Cloud-3.webp'
 import cloud4 from '../../assets/images/scene/interactive-cloud/Cloud-4.webp'
 import cloud5 from '../../assets/images/scene/interactive-cloud/Cloud-5.webp'
-import '../lib/interactive-cloud.js'
 import '../scene.css'
 
 const CLOUD_EFFECT = {
@@ -31,6 +30,47 @@ const DENSITY_HAZE = 0.18
 const MOBILE_QUERY = '(max-width: 640px)'
 const MOBILE_DENSITY_FACTOR = 0.4
 
+// Las nubes (5 contextos WebGL + simulación de partículas) y las estrellas son
+// pura decoración: se montan recién cuando el navegador está ocioso después del
+// primer pintado, para que no compitan con el render del hero ni inflen el TBT.
+// El cielo (<img>) sí se muestra de inmediato; la escena es position:fixed, así
+// que montar el resto después no mueve nada del layout.
+function useDeferredScene() {
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    let idleId: number | undefined
+    let timeoutId: number | undefined
+
+    const start = () => {
+      const mount = () => {
+        // el custom element <interactive-cloud> se registra al importar el módulo
+        import('../lib/interactive-cloud.js').then(() => {
+          if (!cancelled) setReady(true)
+        })
+      }
+      if (typeof window.requestIdleCallback === 'function') {
+        idleId = window.requestIdleCallback(mount, { timeout: 1500 })
+      } else {
+        timeoutId = window.setTimeout(mount, 300)
+      }
+    }
+
+    if (document.readyState === 'complete') start()
+    else window.addEventListener('load', start, { once: true })
+
+    return () => {
+      cancelled = true
+      window.removeEventListener('load', start)
+      if (idleId !== undefined) window.cancelIdleCallback(idleId)
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId)
+    }
+  }, [])
+
+  return ready
+}
+
 function useIsMobileViewport() {
   const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches)
 
@@ -50,6 +90,7 @@ interface SceneCanvasProps {
 
 export function SceneCanvas({ isNight }: SceneCanvasProps) {
   const isMobile = useIsMobileViewport()
+  const sceneReady = useDeferredScene()
   const scale = isMobile ? MOBILE_DENSITY_FACTOR : 1
   const cloudEffect = isNight ? { ...CLOUD_EFFECT, glow: 0.35 } : CLOUD_EFFECT
 
@@ -66,12 +107,16 @@ export function SceneCanvas({ isNight }: SceneCanvasProps) {
         </svg>
       </div>
       <div className="scene-shooting-star" />
-      <StarField night={isNight} />
-      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--4" src={cloud4} {...cloudEffect} density={DENSITY_HAZE * scale} />
-      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--3" src={cloud3} {...cloudEffect} density={DENSITY_MID * scale} />
-      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--2" src={cloud2} {...cloudEffect} density={DENSITY_WISP * scale} />
-      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--1" src={cloud1} {...cloudEffect} density={DENSITY_HERO * scale} />
-      <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--5" src={cloud5} {...cloudEffect} density={DENSITY_HERO * scale} />
+      {sceneReady && (
+        <>
+          <StarField night={isNight} />
+          <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--4" src={cloud4} {...cloudEffect} density={DENSITY_HAZE * scale} />
+          <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--3" src={cloud3} {...cloudEffect} density={DENSITY_MID * scale} />
+          <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--2" src={cloud2} {...cloudEffect} density={DENSITY_WISP * scale} />
+          <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--1" src={cloud1} {...cloudEffect} density={DENSITY_HERO * scale} />
+          <interactive-cloud class="scene-cloud-interactive scene-cloud-interactive--5" src={cloud5} {...cloudEffect} density={DENSITY_HERO * scale} />
+        </>
+      )}
     </div>
   )
 }

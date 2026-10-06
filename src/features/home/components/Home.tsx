@@ -1,4 +1,4 @@
-import portrait from '../../../assets/images/home/franco-portrait.png'
+import portrait from '../../../assets/images/home/franco-portrait.webp'
 import { useParticlePortrait } from '../hooks/useParticlePortrait'
 import '../home.css'
 
@@ -15,7 +15,15 @@ export function Home() {
           data-particles={ready ? 'ready' : undefined}
         >
           <div className="home-hero__portrait-shadow">
-            <img className="home-hero__portrait" src={portrait} alt="Franco Ledesma" />
+            <img
+              className="home-hero__portrait"
+              src={portrait}
+              alt="Franco Ledesma"
+              width={768}
+              height={1152}
+              decoding="async"
+              fetchPriority="high"
+            />
           </div>
           <canvas
             ref={canvasRef}
